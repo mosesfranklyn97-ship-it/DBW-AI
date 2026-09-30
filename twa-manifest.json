@@ -1,0 +1,30 @@
+{
+  "packageId": "ai.dbw.app",
+  "host": "dbw-ai.vercel.app",
+  "name": "DBW AI",
+  "launchMode": "default",
+  "display": "standalone",
+  "themeColor": "#ffffff",
+  "navigationColor": "#ffffff",
+  "backgroundColor": "#ffffff",
+  "iconUrl": "https://dbw-ai.vercel.app/icons/icon-512.png",
+  "splashScreenFadeOutDuration": 200,
+  "enableNotifications": false,
+  "enableOnBackPressed": true,
+  "preferDarkTheme": false,
+  "fallbackType": "web_browser",
+  "resolveInfo": {
+    "strategy": "playStore",
+    "fallback": {
+      "type": "browser",
+      "reason": "Play Store unavailable"
+    }
+  },
+  "android": {
+    "namespace": "ai.dbw.app"
+  },
+  "extraManifestColors": {
+    "primary": "#ffffff"
+  },
+  "startUrl": "https://dbw-ai.vercel.app/?source=twa"
+}

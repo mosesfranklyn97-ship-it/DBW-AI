@@ -1,0 +1,580 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Light surfaces. Kept as a custom ramp so `bg-ink-*` utilities still resolve
+     after the switch from the old dark palette. */
+  --color-ink-950: #ffffff;
+  --color-ink-900: #ffffff;
+  --color-ink-800: #f8fafc;
+  --color-ink-700: #f1f5f9;
+  --color-brand-400: #5b6cff;
+  --color-brand-500: #4f46e5;
+  --color-brand-600: #4338ca;
+  --color-aqua-400: #0ea5e9;
+  --color-mint-400: #10b981;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+/*
+ * The app is light-only. `color-scheme` on the root is what stops Safari,
+ * Chrome and Edge from auto-inverting form controls, scrollbars, the caret and
+ * the default canvas when the OS is in dark mode, which is the one place a dark
+ * background could still leak onto an otherwise white UI.
+ */
+:root {
+  color-scheme: light;
+  forced-color-adjust: none;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Clears the sticky header (plus its safe-area padding) for every in-page
+     anchor link, instead of hiding the target underneath it. */
+  scroll-padding-top: 6.5rem;
+  background: #ffffff;
+  background-color: #ffffff;
+  color-scheme: light;
+  /* Nothing may rubber-band past the document, because the area revealed by the
+     bounce is painted from the root background and would otherwise flash. */
+  overscroll-behavior: none;
+}
+
+body {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(1100px 600px at 12% -10%, rgba(91, 108, 255, 0.1), transparent 60%),
+    radial-gradient(900px 500px at 92% 0%, rgba(56, 189, 248, 0.09), transparent 55%),
+    radial-gradient(800px 700px at 50% 120%, rgba(168, 85, 247, 0.07), transparent 60%);
+  background-attachment: fixed;
+  color: #0f172a;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  max-width: 100vw;
+  overflow-x: clip;
+  overscroll-behavior: none;
+  min-height: 100dvh;
+}
+
+img,
+svg,
+video,
+canvas,
+pre {
+  max-width: 100%;
+}
+
+/* The ER diagram's "Actual size" mode needs the injected <svg> to keep its
+   natural ~1090px width inside a horizontal scroller. The clamp above is
+   unlayered, so it beats Tailwind's `[&_svg]:max-w-none` (which lives in
+   `@layer utilities`) and silently made both zoom modes render identically.
+   This has to be unlayered too, for the same reason. */
+.diagram-actual svg {
+  max-width: none;
+}
+
+/* A table inside a scroll container has to be allowed to exceed that container
+   so it scrolls horizontally. Without this the clamp squeezes cells instead. */
+.overflow-x-auto > table,
+.overflow-auto > table {
+  max-width: max-content;
+}
+
+a,
+button,
+[role="button"],
+summary,
+label {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+input,
+textarea,
+select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  -webkit-appearance: auto;
+  appearance: auto;
+}
+
+/* `appearance: none` above removed the native arrow and nothing replaced it,
+   so a styled <select> looked like a static label with no hint that it opens a
+   picker. Restore an explicit chevron. */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.4rem center;
+  background-size: 0.85rem;
+  padding-right: 1.6rem;
+}
+
+/* The compact type pill in the schema editor needs tighter padding so the
+   chevron does not crowd the label. */
+.type-pill {
+  background-position: right 0.3rem center;
+  padding-right: 1.35rem;
+}
+
+:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.22);
+}
+
+.grid-overlay {
+  background-image:
+    linear-gradient(rgba(100, 116, 139, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 116, 139, 0.09) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+.glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.88));
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 50px -32px rgba(15, 23, 42, 0.35);
+}
+
+.glass-soft {
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, #1e293b 10%, #4f46e5 45%, #0ea5e9 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* The SQL and diagram panels opt back into a dark surface, where code and
+   connector colours keep their contrast. */
+.code-panel {
+  background: #0b1020;
+  border: 1px solid rgba(124, 140, 255, 0.2);
+  color: #e6ecff;
+}
+
+/*
+ * Buttons.
+ *
+ * Depth is built entirely from inset shadows rather than an ::after gloss
+ * overlay, so every variant works unchanged at any border-radius (including the
+ * `rounded-full` mic) and cannot collide with a pseudo-element a component
+ * defines for itself. Each button gets four layers: a lit top edge, a shaded
+ * bottom edge, a tight contact shadow and a wide ambient glow. The two edge
+ * layers are what stop it reading as a flat gradient rectangle.
+ *
+ * No variant sets `color`. These rules are unlayered, so they would outrank the
+ * `text-*` utilities sitting next to them in the class attribute and silently
+ * defeat them; the text colour stays with the caller, as it was before.
+ */
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.btn-danger,
+.btn-success {
+  position: relative;
+  transition:
+    transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(165deg, #7c8bff 0%, #5b6cff 38%, #6d28d9 72%, #0ea5e9 130%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -2px 0 rgba(15, 23, 42, 0.28),
+    inset 0 -14px 22px -14px rgba(15, 23, 42, 0.5),
+    0 1px 1px rgba(15, 23, 42, 0.16),
+    0 10px 22px -8px rgba(91, 108, 255, 0.75),
+    0 22px 40px -22px rgba(109, 40, 217, 0.7);
+}
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.07) saturate(1.06);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -2px 0 rgba(15, 23, 42, 0.28),
+    inset 0 -14px 22px -14px rgba(15, 23, 42, 0.5),
+    0 2px 3px rgba(15, 23, 42, 0.18),
+    0 16px 30px -8px rgba(91, 108, 255, 0.85),
+    0 30px 52px -22px rgba(109, 40, 217, 0.8);
+}
+/* Pressed: the button sinks to where its bottom edge meets the surface, so the
+   whole stack of shadows collapses rather than just dimming. */
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px) scale(0.994);
+  filter: brightness(0.97);
+  box-shadow:
+    inset 0 2px 5px rgba(15, 23, 42, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 1px 1px rgba(15, 23, 42, 0.16);
+}
+.btn-primary:disabled {
+  opacity: 0.55;
+  filter: grayscale(0.45);
+  transform: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 0 rgba(148, 163, 184, 0.35),
+    0 1px 1px rgba(15, 23, 42, 0.05),
+    0 6px 14px -8px rgba(15, 23, 42, 0.3);
+}
+.btn-secondary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 0 rgba(148, 163, 184, 0.4),
+    0 2px 3px rgba(15, 23, 42, 0.07),
+    0 10px 20px -8px rgba(15, 23, 42, 0.34);
+}
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(148, 163, 184, 0.4);
+}
+.btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: inset 0 1px 2px rgba(148, 163, 184, 0.25);
+}
+
+.btn-danger {
+  background: linear-gradient(180deg, #fb7185 0%, #e11d48 55%, #9f1239 120%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 0 rgba(76, 5, 25, 0.5),
+    0 1px 1px rgba(15, 23, 42, 0.16),
+    0 10px 22px -8px rgba(225, 29, 72, 0.6);
+}
+.btn-danger:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+.btn-danger:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgba(76, 5, 25, 0.55);
+}
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-success {
+  background: linear-gradient(180deg, #34d399 0%, #059669 55%, #065f46 120%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 0 rgba(4, 47, 46, 0.5),
+    0 1px 1px rgba(15, 23, 42, 0.16),
+    0 10px 22px -8px rgba(5, 150, 105, 0.55);
+}
+.btn-success:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+.btn-success:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgba(4, 47, 46, 0.55);
+}
+.btn-success:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* A flat control for tertiary actions. No depth, because nothing is being
+   committed to - it only needs to read as tappable. */
+.btn-ghost {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.4);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(241, 245, 249, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(100, 116, 139, 0.55);
+}
+.btn-ghost:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 3px rgba(148, 163, 184, 0.45);
+}
+.btn-ghost:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.mic-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px solid rgba(248, 113, 113, 0.65);
+  animation: micPulse 1.4s ease-out infinite;
+}
+
+/* Smooths the mic's input-level ring, which is driven from a per-frame RMS
+   reading and would otherwise visibly judder. */
+.mic-level {
+  transition: transform 90ms linear, opacity 90ms linear;
+}
+
+@keyframes micPulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, rgba(124, 140, 255, 0.05), rgba(124, 140, 255, 0.28), rgba(124, 140, 255, 0.05));
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.45s ease both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bottom-sheet entry for the destructive-action confirm. */
+.fade-in {
+  animation: fadeIn 0.18s ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.sheet-in {
+  animation: sheetIn 0.22s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes sheetIn {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.scroll-thin::-webkit-scrollbar {
+  height: 9px;
+  width: 9px;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.9);
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.35);
+  border-radius: 999px;
+}
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.6);
+}
+
+.sql-code .kw {
+  color: #c084fc;
+  font-weight: 600;
+}
+.sql-code .str {
+  color: #86efac;
+}
+.sql-code .num {
+  color: #fbbf24;
+}
+.sql-code .cmt {
+  color: #64748b;
+  font-style: italic;
+}
+.sql-code .id {
+  color: #7dd3fc;
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-bottom {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+.safe-bottom-flush {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.min-h-dvh {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.scroll-x-touch {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.toast-safe {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
+}
+
+.action-bar-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.6rem);
+}
+
+/* Below xl the builder pins an action bar to the bottom of the screen. Toasts
+   and the install prompt used to sit at the same offset and therefore covered
+   the primary "Download database.zip" button. */
+@media (max-width: 1279px) {
+  .toast-safe {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem);
+  }
+  .error-toast-safe {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 9.5rem);
+  }
+  /* The install prompt is rendered after {children} in the root layout, so at
+     an identical offset and z-index it painted straight over the toast and
+     swallowed every download confirmation. It now stacks above it: bar 0 ->
+     toast 5.5rem -> error 9.5rem -> install prompt 13rem. */
+  .install-prompt-safe {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 13rem);
+  }
+  /* The update prompt goes on top of the lot. It is the only card the user has
+     to act on for the app to move to the new build, so it must never be the
+     one that ends up underneath something else. */
+  .update-prompt-safe {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 17rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .toast-safe,
+  .error-toast-safe {
+    bottom: 1rem;
+  }
+}
+
+/* `background-attachment: fixed` repaints three stacked radial gradients on
+   every scroll frame, which visibly drops frames on mid-range Android and
+   while the on-screen keyboard is animating. Pin it to a fixed layer instead. */
+@media (hover: none) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
+/* Touch devices get no hover state, so `hover:`-only controls give no press
+   feedback at all. Provide a consistent one. */
+@media (hover: none) {
+  button:active,
+  a:active,
+  [role="button"]:active,
+  [role="switch"]:active {
+    opacity: 0.75;
+  }
+}
+
+/* Anything that is meant to be tappable gets a thumb-sized hit area even when
+   the visual box is smaller. */
+.tap-target {
+  position: relative;
+}
+.tap-target::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+@media (hover: none) {
+  .hover-reveal {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,2 @@
+ALTER TABLE "projects" ADD CONSTRAINT "projects_workspace_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "revisions" ADD CONSTRAINT "revisions_project_fk" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;

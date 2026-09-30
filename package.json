@@ -1,0 +1,52 @@
+{
+  "name": "dbw-ai",
+  "private": true,
+  "scripts": {
+    "sw:stamp": "node scripts/stamp-sw.mjs",
+    "assets:sqljs": "node scripts/copy-sqljs-asset.mjs",
+    "assets:assetlinks": "node scripts/write-assetlinks.mjs",
+    "dev": "npm run sw:stamp && npm run assets:sqljs && npm run assets:assetlinks && next dev",
+    "build": "npm run sw:stamp && npm run assets:sqljs && npm run assets:assetlinks && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "check": "tsx scripts/check-parser.ts && tsx scripts/check-sample-data.ts && tsx scripts/check-diff.ts && tsx scripts/check-share.ts && node scripts/check-icons.mjs",
+    "icons": "node scripts/generate-icons.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.6.0",
+    "@hcaptcha/react-hcaptcha": "^2.2.0",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
+    "dotenv": "17.3.1",
+    "drizzle-orm": "0.45.2",
+    "jszip": "^3.10.2",
+    "next": "16.3.6",
+    "pg": "8.20.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "sql.js": "^1.14.2"
+  },
+  "overrides": {
+    "esbuild": "0.25.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.17",
+    "@types/node": "22.19.15",
+    "@types/pg": "8.18.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@types/sql.js": "^1.4.11",
+    "drizzle-kit": "0.31.10",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.3.6",
+    "postcss": "8.5.28",
+    "sharp": "0.35.5",
+    "tailwindcss": "4.1.17",
+    "typescript": "5.9.3"
+  }
+}
